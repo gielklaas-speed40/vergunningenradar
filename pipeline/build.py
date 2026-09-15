@@ -189,7 +189,7 @@ def pagina(titel: str, body: str, diepte: int, omschrijving: str, canonical: str
 <main><div class="wrap">
 {body}
 </div></main>
-<footer><div class="wrap">Bron: gemeentebladen via officielebekendmakingen.nl, dagelijks bijgewerkt. Adressen komen uit de openbare bekendmaking, er staan geen namen van aanvragers op deze site. Een dienst van <a href="https://klaasystems.nl/">Klaasystems</a>.</div></footer>
+<footer><div class="wrap">Bron: gemeentebladen via officielebekendmakingen.nl, dagelijks bijgewerkt. Adressen komen uit de openbare bekendmaking, er staan geen namen van aanvragers op deze site. Een dienst van <a href="https://klaasystems.nl/">Klaasystems</a>. <a href="{root}privacy.html">Privacy</a>.</div></footer>
 </body>
 </html>
 """
@@ -346,7 +346,7 @@ def bouw_site(vergunningen: list[dict], uit: str, vandaag: dt.date, dagen_lijst:
     consument_urls = bouw_consument(bouw, uit, naam, dagen_lijst)
 
     # Sitemap voor deze sectie
-    urls = ["", "werk/", "over.html"] + [f"{s}/" for s in per_gemeente] + [f"werk/{w}/" for w in per_werk] + consument_urls
+    urls = ["", "werk/", "over.html", "privacy.html"] + [f"{s}/" for s in per_gemeente] + [f"werk/{w}/" for w in per_werk] + consument_urls
     with open(os.path.join(uit, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for u in urls:
