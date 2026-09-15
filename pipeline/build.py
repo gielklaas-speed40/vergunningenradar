@@ -87,6 +87,16 @@ tr:last-child td{border-bottom:none}
 td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl{overflow-x:auto}
 .knop{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:10px 18px;border-radius:6px;font-weight:600}
+.check{background:var(--panel);border:1px solid var(--line);padding:18px 20px;margin:12px 0 22px;max-width:720px}
+.check fieldset{border:none;padding:0;margin:0 0 14px}
+.check legend{font-weight:600;margin-bottom:6px}
+.check label{display:block;padding:4px 0;font-size:15px}
+.check label input{margin-right:8px}
+.check .uitslag{border-top:1px solid var(--line);padding-top:14px;font-size:16px}
+.check .uitslag b{display:block;font-family:Archivo,sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.check .uitslag.vrij b{color:var(--acc)}
+.check .uitslag.nodig b{color:var(--warn)}
+.check .uitslag.leeg{color:var(--mut)}
 .blok{background:var(--panel);border:1px solid var(--line);padding:16px 18px;max-width:640px;margin:8px 0 20px}
 .tag{display:inline-block;padding:1px 7px;border-radius:4px;background:var(--acc-soft);color:var(--acc);font-size:12px;white-space:nowrap}
 .tag.grijs{background:#eef1f4;color:var(--mut)}
@@ -346,6 +356,85 @@ def bouw_site(vergunningen: list[dict], uit: str, vandaag: dt.date, dagen_lijst:
     return {"gemeenten": len(per_gemeente), "werksoorten": len(per_werk), "recent": len(recent), "bouw": len(bouw), "consument": len(consument_urls)}
 
 
+CHECKS = {
+    "dakkapel": {
+        "vragen": [
+            ("Op welk dakvlak komt de dakkapel?", [("achter", "Achterkant of zijkant, niet naar de openbare weg"), ("voor", "Voorkant, of zijkant naar de openbare weg")]),
+            ("Hoogte van de dakkapel, gemeten vanaf de voet?", [("ok", "Hoogstens 1,75 meter"), ("nee", "Hoger dan 1,75 meter")]),
+            ("Afstand tot de dakrand, nok en zijkanten van het dak?", [("ok", "Overal minstens 0,5 meter"), ("nee", "Ergens minder dan 0,5 meter")]),
+            ("Is het huis een monument of ligt het in een beschermd stads- of dorpsgezicht?", [("ok", "Nee"), ("nee", "Ja of weet ik niet")]),
+        ],
+        "vrij": "Op basis van de landelijke regels is deze dakkapel vergunningsvrij. Controleer het nog op omgevingsloket.nl, want de gemeente kan in het omgevingsplan een welstandsregel voor de achterkant hebben.",
+        "nodig": "Voor deze dakkapel is een omgevingsvergunning nodig. Aan de voorkant geldt bijna altijd welstand, en boven de maten of bij een monument beoordeelt de gemeente de aanvraag. Reken op acht weken.",
+    },
+    "aanbouw": {
+        "vragen": [
+            ("Waar komt de aanbouw?", [("achter", "Aan de achterkant"), ("voor", "Aan de voorkant of zijkant naar de openbare weg")]),
+            ("Hoe diep wordt de aanbouw, gemeten vanaf de oorspronkelijke achtergevel?", [("ok", "Hoogstens 4 meter"), ("nee", "Meer dan 4 meter")]),
+            ("Hoe hoog wordt hij?", [("ok", "Eén bouwlaag, niet hoger dan 5 meter en niet hoger dan 30 cm boven de eerste verdiepingsvloer"), ("nee", "Hoger, of met een verdieping")]),
+            ("Blijft na de aanbouw minstens de helft van het achtererf onbebouwd?", [("ok", "Ja"), ("nee", "Nee of weet ik niet")]),
+            ("Is het huis een monument of ligt het in een beschermd stads- of dorpsgezicht?", [("ok", "Nee"), ("nee", "Ja of weet ik niet")]),
+        ],
+        "vrij": "Op basis van de landelijke regels is deze aanbouw vergunningsvrij voor het bouwen. Let op: je moet wel voldoen aan het Besluit bouwwerken leefomgeving (constructie, isolatie) en soms geldt een melding. Controleer het op omgevingsloket.nl.",
+        "nodig": "Voor deze aanbouw is een omgevingsvergunning nodig. De gemeente toetst aan het omgevingsplan en welstand. Reken op acht weken, bij een afwijking van het omgevingsplan langer.",
+    },
+    "gevel": {
+        "vragen": [
+            ("Wat verandert er aan de gevel?", [("ok", "Alleen de kozijnen of het glas, in dezelfde maat en indeling"), ("nee", "De indeling verandert: groter raam, extra deur, ander kozijn")]),
+            ("Om welke gevel gaat het?", [("ok", "Achterkant of zijkant, niet naar de openbare weg"), ("voor", "Voorkant, of zijkant naar de openbare weg")]),
+            ("Is het huis een monument of ligt het in een beschermd stads- of dorpsgezicht?", [("ok", "Nee"), ("nee", "Ja of weet ik niet")]),
+        ],
+        "vrij": "Kozijnen of glas vervangen in dezelfde maat en indeling is vergunningsvrij, ook aan de voorkant, zolang het huis geen monument is. Controleer het op omgevingsloket.nl als je twijfelt over de kleur of het materiaal bij een beschermd gezicht.",
+        "nodig": "Voor deze gevelwijziging is een omgevingsvergunning nodig. De gemeente toetst aan welstand, en bij een monument aan de monumentenregels. Reken op acht weken.",
+        "voor_ok": True,
+    },
+    "zonnepanelen": {
+        "vragen": [
+            ("Op wat voor dak komen de panelen?", [("schuin", "Schuin dak, panelen in het dakvlak en met dezelfde hellingshoek"), ("plat", "Plat dak, met minstens zoveel afstand tot de dakrand als de panelen hoog zijn"), ("nee", "Anders: uitstekend, op een frame, of tegen de gevel")]),
+            ("Is het huis een monument of ligt het in een beschermd stads- of dorpsgezicht?", [("ok", "Nee"), ("nee", "Ja of weet ik niet")]),
+        ],
+        "vrij": "Zonnepanelen zijn hier vergunningsvrij. Je hoeft niets aan te vragen, wel de installatie melden bij de netbeheerder via energieleveren.nl.",
+        "nodig": "Voor deze zonnepanelen is een omgevingsvergunning nodig. Bij monumenten en beschermde gezichten beoordeelt de gemeente de zichtbaarheid, en panelen buiten het dakvlak gelden als een bouwwerk.",
+    },
+}
+
+CHECK_CSS = """
+.check{background:var(--panel);border:1px solid var(--line);padding:18px 20px;margin:12px 0 22px;max-width:720px}
+.check fieldset{border:none;padding:0;margin:0 0 14px}
+.check legend{font-weight:600;margin-bottom:6px}
+.check label{display:block;padding:4px 0;font-size:15px}
+.check label input{margin-right:8px}
+.check .uitslag{border-top:1px solid var(--line);padding-top:14px;font-size:16px}
+.check .uitslag b{display:block;font-family:Archivo,sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.check .uitslag.vrij b{color:var(--acc)}
+.check .uitslag.nodig b{color:var(--warn)}
+.check .uitslag.leeg{color:var(--mut)}
+"""
+
+
+def vergunningcheck(werk: str) -> str:
+    c = CHECKS.get(werk)
+    if not c:
+        return ""
+    velden = []
+    for i, (vraag, opties) in enumerate(c["vragen"]):
+        opts = "".join(f'<label><input type="radio" name="v{i}" value="{e(val)}">{e(tekst)}</label>' for val, tekst in opties)
+        velden.append(f'<fieldset><legend>{e(vraag)}</legend>{opts}</fieldset>')
+    nvragen = len(c["vragen"])
+    voor_ok = "true" if c.get("voor_ok") else "false"
+    return f"""<div class="check">
+{"".join(velden)}
+<div class="uitslag leeg" id="uitslag">Beantwoord de vragen, dan zie je hier of je een vergunning nodig hebt.</div>
+</div>
+<script>
+(function(){{var n={nvragen};var u=document.getElementById('uitslag');var vrij={json.dumps(c["vrij"])};var nodig={json.dumps(c["nodig"])};var voorOk={voor_ok};
+function upd(){{var ant=[];for(var i=0;i<n;i++){{var r=document.querySelector('input[name=v'+i+']:checked');if(!r)return;ant.push(r.value);}}
+var slecht=ant.some(function(a){{return a==='nee'||(a==='voor'&&!voorOk);}});
+u.className='uitslag '+(slecht?'nodig':'vrij');u.innerHTML='<b>'+(slecht?'Vergunning nodig':'Vergunningsvrij')+'</b>'+(slecht?nodig:vrij);}}
+document.querySelectorAll('.check input').forEach(function(el){{el.addEventListener('change',upd);}});}})();
+</script>"""
+
+
 def bouw_consument(bouw: list[dict], uit: str, naam: dict, dagen_lijst: int) -> list[str]:
     """Pagina's voor huiseigenaren: per gemeente en werksoort, alleen bij genoeg data."""
     minimum = int(CONFIG.get("minimum_per_pagina", 3))
@@ -371,17 +460,18 @@ def bouw_consument(bouw: list[dict], uit: str, naam: dict, dagen_lijst: int) -> 
 <p class="klein" style="margin:12px 0 0">Wij ontvangen een vergoeding van {e(partner.get('naam') or 'de partner')} als je via deze knop offertes aanvraagt. Dat verandert niets aan de prijs die je betaalt.</p></div>"""
         pad = f"{c['pad']}/{slug}/"
         os.makedirs(os.path.join(uit, c["pad"], slug), exist_ok=True)
-        body = f"""<h1>{e(c['kop'].format(g=g))}</h1>
-<p class="lead">In de afgelopen {dagen_lijst} dagen publiceerde de gemeente {e(g)} {len(items)} bekendmakingen over {e(c['meervoud'])}: {len(verleend)} verleend en {len(aangevraagd)} in aanvraag. Hieronder staan de adressen, de regels, en hoe je aan prijzen komt.</p>
-<h2>Heb je een vergunning nodig?</h2>
+        body = f"""<h1>{e(c['kop'].format(g=g))}: vergunning nodig?</h1>
+<p class="lead">In de afgelopen {dagen_lijst} dagen publiceerde de gemeente {e(g)} {len(items)} bekendmakingen over {e(c['meervoud'])}: {len(verleend)} verleend en {len(aangevraagd)} in aanvraag. Check hieronder of jij een vergunning nodig hebt, en zie welke adressen je voorgingen.</p>
+<h2>Check het in een halve minuut</h2>
+{vergunningcheck(werk)}
 <p>{e(c['regels'])}</p>
-<p class="klein">Dit is de landelijke hoofdregel uit het Besluit bouwwerken leefomgeving. Gemeenten kunnen in het omgevingsplan strengere eisen stellen, dus doe altijd de vergunningcheck.</p>
+<p class="klein">Dit is de landelijke hoofdregel uit het Besluit bouwwerken leefomgeving. Gemeenten kunnen in het omgevingsplan strengere eisen stellen, dus doe voor de zekerheid ook de vergunningcheck op <a href="https://omgevingswet.overheid.nl/vergunningcheck" rel="noopener" target="_blank">omgevingsloket.nl</a>.</p>
 <h2>Recent in {e(g)}</h2>
 {tabel(items, False)}
 {offerte}
 <p class="klein">Bron: gemeenteblad van {e(g)} via officielebekendmakingen.nl. Adressen zijn de adressen van het bouwwerk zoals de gemeente die publiceert, zonder namen van aanvragers.</p>"""
         with open(os.path.join(uit, c["pad"], slug, "index.html"), "w", encoding="utf-8") as f:
-            f.write(pagina(c["titel"].format(g=g), body, 2,
+            f.write(pagina(c["titel"].format(g=g).replace(": vergunning, recente aanvragen en offertes", " vergunning nodig? Check, recente aanvragen en offertes").replace(": wanneer een vergunning nodig is, recente aanvragen en offertes", " vergunning nodig? Check, recente aanvragen en offertes"), body, 2,
                            f"{c['kop'].format(g=g)}: wanneer je een vergunning nodig hebt, welke adressen recent een aanvraag deden en waar je offertes vergelijkt.", pad))
         urls.append(pad)
     # Indexpagina per werksoort met alle gemeenten

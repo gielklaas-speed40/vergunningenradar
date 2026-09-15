@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dakkapel plaatsen in Zaanstad: vergunning, recente aanvragen en offertes</title>
+<title>Dakkapel plaatsen in Zaanstad vergunning nodig? Check, recente aanvragen en offertes</title>
 <meta name="description" content="Dakkapel in Zaanstad: wanneer je een vergunning nodig hebt, welke adressen recent een aanvraag deden en waar je offertes vergelijkt.">
 <link rel="canonical" href="https://vergunningenradar.nl/dakkapel/zaanstad/">
 
@@ -31,6 +31,16 @@ tr:last-child td{border-bottom:none}
 td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl{overflow-x:auto}
 .knop{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:10px 18px;border-radius:6px;font-weight:600}
+.check{background:var(--panel);border:1px solid var(--line);padding:18px 20px;margin:12px 0 22px;max-width:720px}
+.check fieldset{border:none;padding:0;margin:0 0 14px}
+.check legend{font-weight:600;margin-bottom:6px}
+.check label{display:block;padding:4px 0;font-size:15px}
+.check label input{margin-right:8px}
+.check .uitslag{border-top:1px solid var(--line);padding-top:14px;font-size:16px}
+.check .uitslag b{display:block;font-family:Archivo,sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.check .uitslag.vrij b{color:var(--acc)}
+.check .uitslag.nodig b{color:var(--warn)}
+.check .uitslag.leeg{color:var(--mut)}
 .blok{background:var(--panel);border:1px solid var(--line);padding:16px 18px;max-width:640px;margin:8px 0 20px}
 .tag{display:inline-block;padding:1px 7px;border-radius:4px;background:var(--acc-soft);color:var(--acc);font-size:12px;white-space:nowrap}
 .tag.grijs{background:#eef1f4;color:var(--mut)}
@@ -71,11 +81,22 @@ header .brand{font-weight:800;font-size:20px}
 <nav><a href="../../">Gemeenten</a><a href="../../werk/">Werksoorten</a><a href="../../over.html">Over de data</a><a href="https://wijkwarm.nl/">Energie per wijk</a></nav>
 </div></header>
 <main><div class="wrap">
-<h1>Dakkapel in Zaanstad</h1>
-<p class="lead">In de afgelopen 60 dagen publiceerde de gemeente Zaanstad 13 bekendmakingen over dakkapellen: 6 verleend en 5 in aanvraag. Hieronder staan de adressen, de regels, en hoe je aan prijzen komt.</p>
-<h2>Heb je een vergunning nodig?</h2>
+<h1>Dakkapel in Zaanstad: vergunning nodig?</h1>
+<p class="lead">In de afgelopen 60 dagen publiceerde de gemeente Zaanstad 13 bekendmakingen over dakkapellen: 6 verleend en 5 in aanvraag. Check hieronder of jij een vergunning nodig hebt, en zie welke adressen je voorgingen.</p>
+<h2>Check het in een halve minuut</h2>
+<div class="check">
+<fieldset><legend>Op welk dakvlak komt de dakkapel?</legend><label><input type="radio" name="v0" value="achter">Achterkant of zijkant, niet naar de openbare weg</label><label><input type="radio" name="v0" value="voor">Voorkant, of zijkant naar de openbare weg</label></fieldset><fieldset><legend>Hoogte van de dakkapel, gemeten vanaf de voet?</legend><label><input type="radio" name="v1" value="ok">Hoogstens 1,75 meter</label><label><input type="radio" name="v1" value="nee">Hoger dan 1,75 meter</label></fieldset><fieldset><legend>Afstand tot de dakrand, nok en zijkanten van het dak?</legend><label><input type="radio" name="v2" value="ok">Overal minstens 0,5 meter</label><label><input type="radio" name="v2" value="nee">Ergens minder dan 0,5 meter</label></fieldset><fieldset><legend>Is het huis een monument of ligt het in een beschermd stads- of dorpsgezicht?</legend><label><input type="radio" name="v3" value="ok">Nee</label><label><input type="radio" name="v3" value="nee">Ja of weet ik niet</label></fieldset>
+<div class="uitslag leeg" id="uitslag">Beantwoord de vragen, dan zie je hier of je een vergunning nodig hebt.</div>
+</div>
+<script>
+(function(){var n=4;var u=document.getElementById('uitslag');var vrij="Op basis van de landelijke regels is deze dakkapel vergunningsvrij. Controleer het nog op omgevingsloket.nl, want de gemeente kan in het omgevingsplan een welstandsregel voor de achterkant hebben.";var nodig="Voor deze dakkapel is een omgevingsvergunning nodig. Aan de voorkant geldt bijna altijd welstand, en boven de maten of bij een monument beoordeelt de gemeente de aanvraag. Reken op acht weken.";var voorOk=false;
+function upd(){var ant=[];for(var i=0;i<n;i++){var r=document.querySelector('input[name=v'+i+']:checked');if(!r)return;ant.push(r.value);}
+var slecht=ant.some(function(a){return a==='nee'||(a==='voor'&&!voorOk);});
+u.className='uitslag '+(slecht?'nodig':'vrij');u.innerHTML='<b>'+(slecht?'Vergunning nodig':'Vergunningsvrij')+'</b>'+(slecht?nodig:vrij);}
+document.querySelectorAll('.check input').forEach(function(el){el.addEventListener('change',upd);});})();
+</script>
 <p>Een dakkapel aan de achterkant is vaak vergunningsvrij, zolang hij binnen de landelijke maten blijft: niet hoger dan 1,75 meter, minstens een halve meter van de dakrand en de nok, en niet op een monument of in een beschermd stadsgezicht. Aan de voorkant of zijkant heb je bijna altijd een omgevingsvergunning nodig. De vergunningcheck op omgevingsloket.nl geeft voor jouw adres uitsluitsel.</p>
-<p class="klein">Dit is de landelijke hoofdregel uit het Besluit bouwwerken leefomgeving. Gemeenten kunnen in het omgevingsplan strengere eisen stellen, dus doe altijd de vergunningcheck.</p>
+<p class="klein">Dit is de landelijke hoofdregel uit het Besluit bouwwerken leefomgeving. Gemeenten kunnen in het omgevingsplan strengere eisen stellen, dus doe voor de zekerheid ook de vergunningcheck op <a href="https://omgevingswet.overheid.nl/vergunningcheck" rel="noopener" target="_blank">omgevingsloket.nl</a>.</p>
 <h2>Recent in Zaanstad</h2>
 <div class="tbl"><table><tr><th>Datum</th><th>Wat</th><th>Adres</th><th>Status</th></tr><tr><td class="num">14 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-431041.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel op het voordakvlak van de woning</a></td><td>Liesgras 36<div class="klein">1567 MS Assendelft</div></td><td><span class="tag grijs">aangevraagd</span></td></tr><tr><td class="num">14 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-431010.html" rel="nofollow noopener" target="_blank">renoveren van het dak en de dakkapel en het wijzigen van de voorgevel</a></td><td>Parkstraat 52<div class="klein">1544 AR Zaandijk</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">14 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-430371.html" rel="nofollow noopener" target="_blank">vervangen van een dakkapel op de voorgevel van de woning</a></td><td>Schoolkade 13<div class="klein">1566 KT Assendelft</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">14 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-429200.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel aan de voorzijde van de woning</a></td><td>Ranonkelplein 24<div class="klein">Zaanstad</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">11 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-428071.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel op de voorgevel van de woning</a></td><td>Mauvestraat 17<div class="klein">1506 JE Zaandam</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">10 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-426138.html" rel="nofollow noopener" target="_blank">bouwen van dakkapellen aan de voor en achtergevel van de woning</a></td><td>Oldebroekstraat 33<div class="klein">1507 LA Zaandam</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">9 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-423519.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel aan de achterzijde van de woning</a></td><td>Burgemeester van Edenstraat 28<div class="klein">1561 WS Krommenie</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">9 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-423484.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel aan de achtergevel van de woning</a></td><td>Woutertje Pietersestraat 17<div class="klein">1507 PJ Zaandam</div></td><td><span class="tag grijs">geweigerd</span></td></tr><tr><td class="num">9 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-423398.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel op de voorzijde van de woning</a></td><td>Treilerstraat 165 a<div class="klein">Zaanstad</div></td><td><span class="tag grijs">aangevraagd</span></td></tr><tr><td class="num">7 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-418570.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel aan de achtergevel van de woning</a></td><td>Woutertje Pietersestraat 17<div class="klein">1507 PJ Zaandam</div></td><td><span class="tag grijs">aangevraagd</span></td></tr><tr><td class="num">3 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-414496.html" rel="nofollow noopener" target="_blank">aanbouw, dakkapellen, vloer en PV-panel, toekomst funderingherstel (ruimtelijk)</a></td><td>Domineestuin 3<div class="klein">1544 PT Zaandijk</div></td><td><span class="tag grijs">beslistermijn verlengd</span></td></tr><tr><td class="num">31 aug 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-407875.html" rel="nofollow noopener" target="_blank">vervangen van de dakkapel en dakraam vervangen door dakvenster</a></td><td>Vincent van Goghweg 38<div class="klein">1506 JC Zaandam</div></td><td><span class="tag grijs">aangevraagd</span></td></tr><tr><td class="num">31 aug 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-407418.html" rel="nofollow noopener" target="_blank">bouwen van een dakkapel op de voorgevel van de woning</a></td><td>Botterlaan 42<div class="klein">1503 JZ Zaandam</div></td><td><span class="tag grijs">aangevraagd</span></td></tr></table></div>
 

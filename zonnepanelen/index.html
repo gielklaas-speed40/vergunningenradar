@@ -31,6 +31,16 @@ tr:last-child td{border-bottom:none}
 td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl{overflow-x:auto}
 .knop{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:10px 18px;border-radius:6px;font-weight:600}
+.check{background:var(--panel);border:1px solid var(--line);padding:18px 20px;margin:12px 0 22px;max-width:720px}
+.check fieldset{border:none;padding:0;margin:0 0 14px}
+.check legend{font-weight:600;margin-bottom:6px}
+.check label{display:block;padding:4px 0;font-size:15px}
+.check label input{margin-right:8px}
+.check .uitslag{border-top:1px solid var(--line);padding-top:14px;font-size:16px}
+.check .uitslag b{display:block;font-family:Archivo,sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.check .uitslag.vrij b{color:var(--acc)}
+.check .uitslag.nodig b{color:var(--warn)}
+.check .uitslag.leeg{color:var(--mut)}
 .blok{background:var(--panel);border:1px solid var(--line);padding:16px 18px;max-width:640px;margin:8px 0 20px}
 .tag{display:inline-block;padding:1px 7px;border-radius:4px;background:var(--acc-soft);color:var(--acc);font-size:12px;white-space:nowrap}
 .tag.grijs{background:#eef1f4;color:var(--mut)}
@@ -73,7 +83,7 @@ header .brand{font-weight:800;font-size:20px}
 <main><div class="wrap">
 <h1>Zonnepanelen in jouw gemeente</h1>
 <p class="lead">Per gemeente zie je hoeveel zonnepaneelinstallaties de afgelopen 60 dagen zijn aangevraagd en verleend, welke regels gelden en waar je offertes vergelijkt.</p>
-<div class="kolommen"><div><a href="s-gravenhage/">&#x27;s-Gravenhage</a> <span class="n">3</span></div><div><a href="amsterdam/">Amsterdam</a> <span class="n">3</span></div><div><a href="gooise-meren/">Gooise Meren</a> <span class="n">4</span></div><div><a href="haarlem/">Haarlem</a> <span class="n">3</span></div></div>
+<div class="kolommen"><div><a href="s-gravenhage/">&#x27;s-Gravenhage</a> <span class="n">3</span></div><div><a href="achtkarspelen/">Achtkarspelen</a> <span class="n">1</span></div><div><a href="alkmaar/">Alkmaar</a> <span class="n">1</span></div><div><a href="alphen-aan-den-rijn/">Alphen aan den Rijn</a> <span class="n">1</span></div><div><a href="altena/">Altena</a> <span class="n">1</span></div><div><a href="amersfoort/">Amersfoort</a> <span class="n">1</span></div><div><a href="amsterdam/">Amsterdam</a> <span class="n">3</span></div><div><a href="bergeijk/">Bergeijk</a> <span class="n">1</span></div><div><a href="bloemendaal/">Bloemendaal</a> <span class="n">1</span></div><div><a href="bronckhorst/">Bronckhorst</a> <span class="n">1</span></div><div><a href="brunssum/">Brunssum</a> <span class="n">1</span></div><div><a href="de-ronde-venen/">De Ronde Venen</a> <span class="n">2</span></div><div><a href="delft/">Delft</a> <span class="n">1</span></div><div><a href="eindhoven/">Eindhoven</a> <span class="n">1</span></div><div><a href="emmen/">Emmen</a> <span class="n">1</span></div><div><a href="enkhuizen/">Enkhuizen</a> <span class="n">1</span></div><div><a href="goeree-overflakkee/">Goeree-Overflakkee</a> <span class="n">1</span></div><div><a href="gooise-meren/">Gooise Meren</a> <span class="n">4</span></div><div><a href="groningen/">Groningen</a> <span class="n">2</span></div><div><a href="haarlem/">Haarlem</a> <span class="n">3</span></div><div><a href="heusden/">Heusden</a> <span class="n">1</span></div><div><a href="hilversum/">Hilversum</a> <span class="n">1</span></div><div><a href="laren/">Laren</a> <span class="n">1</span></div><div><a href="leiden/">Leiden</a> <span class="n">2</span></div><div><a href="lochem/">Lochem</a> <span class="n">1</span></div><div><a href="maastricht/">Maastricht</a> <span class="n">1</span></div><div><a href="medemblik/">Medemblik</a> <span class="n">1</span></div><div><a href="nieuwegein/">Nieuwegein</a> <span class="n">1</span></div><div><a href="nijmegen/">Nijmegen</a> <span class="n">1</span></div><div><a href="oldambt/">Oldambt</a> <span class="n">1</span></div><div><a href="roermond/">Roermond</a> <span class="n">1</span></div><div><a href="staphorst/">Staphorst</a> <span class="n">1</span></div><div><a href="steenwijkerland/">Steenwijkerland</a> <span class="n">2</span></div><div><a href="stichtse-vecht/">Stichtse Vecht</a> <span class="n">1</span></div><div><a href="sudwest-fryslan/">Súdwest-Fryslân</a> <span class="n">2</span></div><div><a href="utrecht/">Utrecht</a> <span class="n">1</span></div><div><a href="utrechtse-heuvelrug/">Utrechtse Heuvelrug</a> <span class="n">1</span></div><div><a href="valkenburg-aan-de-geul/">Valkenburg aan de Geul</a> <span class="n">1</span></div><div><a href="wassenaar/">Wassenaar</a> <span class="n">1</span></div><div><a href="zutphen/">Zutphen</a> <span class="n">1</span></div></div>
 </div></main>
 <footer><div class="wrap">Bron: gemeentebladen via officielebekendmakingen.nl, dagelijks bijgewerkt. Adressen komen uit de openbare bekendmaking, er staan geen namen van aanvragers op deze site. Een dienst van <a href="https://klaasystems.nl/">Klaasystems</a>.</div></footer>
 </body>

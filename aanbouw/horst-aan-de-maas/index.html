@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aanbouw of uitbouw in Horst aan de Maas: vergunning, recente aanvragen en offertes</title>
+<title>Aanbouw of uitbouw in Horst aan de Maas vergunning nodig? Check, recente aanvragen en offertes</title>
 <meta name="description" content="Aanbouw of uitbouw in Horst aan de Maas: wanneer je een vergunning nodig hebt, welke adressen recent een aanvraag deden en waar je offertes vergelijkt.">
 <link rel="canonical" href="https://vergunningenradar.nl/aanbouw/horst-aan-de-maas/">
 
@@ -31,6 +31,16 @@ tr:last-child td{border-bottom:none}
 td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tbl{overflow-x:auto}
 .knop{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;padding:10px 18px;border-radius:6px;font-weight:600}
+.check{background:var(--panel);border:1px solid var(--line);padding:18px 20px;margin:12px 0 22px;max-width:720px}
+.check fieldset{border:none;padding:0;margin:0 0 14px}
+.check legend{font-weight:600;margin-bottom:6px}
+.check label{display:block;padding:4px 0;font-size:15px}
+.check label input{margin-right:8px}
+.check .uitslag{border-top:1px solid var(--line);padding-top:14px;font-size:16px}
+.check .uitslag b{display:block;font-family:Archivo,sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.check .uitslag.vrij b{color:var(--acc)}
+.check .uitslag.nodig b{color:var(--warn)}
+.check .uitslag.leeg{color:var(--mut)}
 .blok{background:var(--panel);border:1px solid var(--line);padding:16px 18px;max-width:640px;margin:8px 0 20px}
 .tag{display:inline-block;padding:1px 7px;border-radius:4px;background:var(--acc-soft);color:var(--acc);font-size:12px;white-space:nowrap}
 .tag.grijs{background:#eef1f4;color:var(--mut)}
@@ -71,11 +81,22 @@ header .brand{font-weight:800;font-size:20px}
 <nav><a href="../../">Gemeenten</a><a href="../../werk/">Werksoorten</a><a href="../../over.html">Over de data</a><a href="https://wijkwarm.nl/">Energie per wijk</a></nav>
 </div></header>
 <main><div class="wrap">
-<h1>Aanbouw of uitbouw in Horst aan de Maas</h1>
-<p class="lead">In de afgelopen 60 dagen publiceerde de gemeente Horst aan de Maas 3 bekendmakingen over aanbouwen en uitbouwen: 2 verleend en 0 in aanvraag. Hieronder staan de adressen, de regels, en hoe je aan prijzen komt.</p>
-<h2>Heb je een vergunning nodig?</h2>
+<h1>Aanbouw of uitbouw in Horst aan de Maas: vergunning nodig?</h1>
+<p class="lead">In de afgelopen 60 dagen publiceerde de gemeente Horst aan de Maas 3 bekendmakingen over aanbouwen en uitbouwen: 2 verleend en 0 in aanvraag. Check hieronder of jij een vergunning nodig hebt, en zie welke adressen je voorgingen.</p>
+<h2>Check het in een halve minuut</h2>
+<div class="check">
+<fieldset><legend>Waar komt de aanbouw?</legend><label><input type="radio" name="v0" value="achter">Aan de achterkant</label><label><input type="radio" name="v0" value="voor">Aan de voorkant of zijkant naar de openbare weg</label></fieldset><fieldset><legend>Hoe diep wordt de aanbouw, gemeten vanaf de oorspronkelijke achtergevel?</legend><label><input type="radio" name="v1" value="ok">Hoogstens 4 meter</label><label><input type="radio" name="v1" value="nee">Meer dan 4 meter</label></fieldset><fieldset><legend>Hoe hoog wordt hij?</legend><label><input type="radio" name="v2" value="ok">Eén bouwlaag, niet hoger dan 5 meter en niet hoger dan 30 cm boven de eerste verdiepingsvloer</label><label><input type="radio" name="v2" value="nee">Hoger, of met een verdieping</label></fieldset><fieldset><legend>Blijft na de aanbouw minstens de helft van het achtererf onbebouwd?</legend><label><input type="radio" name="v3" value="ok">Ja</label><label><input type="radio" name="v3" value="nee">Nee of weet ik niet</label></fieldset><fieldset><legend>Is het huis een monument of ligt het in een beschermd stads- of dorpsgezicht?</legend><label><input type="radio" name="v4" value="ok">Nee</label><label><input type="radio" name="v4" value="nee">Ja of weet ik niet</label></fieldset>
+<div class="uitslag leeg" id="uitslag">Beantwoord de vragen, dan zie je hier of je een vergunning nodig hebt.</div>
+</div>
+<script>
+(function(){var n=5;var u=document.getElementById('uitslag');var vrij="Op basis van de landelijke regels is deze aanbouw vergunningsvrij voor het bouwen. Let op: je moet wel voldoen aan het Besluit bouwwerken leefomgeving (constructie, isolatie) en soms geldt een melding. Controleer het op omgevingsloket.nl.";var nodig="Voor deze aanbouw is een omgevingsvergunning nodig. De gemeente toetst aan het omgevingsplan en welstand. Reken op acht weken, bij een afwijking van het omgevingsplan langer.";var voorOk=false;
+function upd(){var ant=[];for(var i=0;i<n;i++){var r=document.querySelector('input[name=v'+i+']:checked');if(!r)return;ant.push(r.value);}
+var slecht=ant.some(function(a){return a==='nee'||(a==='voor'&&!voorOk);});
+u.className='uitslag '+(slecht?'nodig':'vrij');u.innerHTML='<b>'+(slecht?'Vergunning nodig':'Vergunningsvrij')+'</b>'+(slecht?nodig:vrij);}
+document.querySelectorAll('.check input').forEach(function(el){el.addEventListener('change',upd);});})();
+</script>
 <p>Een aanbouw aan de achterkant is vergunningsvrij tot vier meter diep, mits het achtererf niet meer dan de helft wordt bebouwd en de aanbouw niet hoger is dan de eerste verdiepingsvloer plus dertig centimeter. Bij een monument, een beschermd dorpsgezicht of een aanbouw aan de zijkant is een omgevingsvergunning nodig. De vergunningcheck op omgevingsloket.nl rekent het voor jouw adres uit.</p>
-<p class="klein">Dit is de landelijke hoofdregel uit het Besluit bouwwerken leefomgeving. Gemeenten kunnen in het omgevingsplan strengere eisen stellen, dus doe altijd de vergunningcheck.</p>
+<p class="klein">Dit is de landelijke hoofdregel uit het Besluit bouwwerken leefomgeving. Gemeenten kunnen in het omgevingsplan strengere eisen stellen, dus doe voor de zekerheid ook de vergunningcheck op <a href="https://omgevingswet.overheid.nl/vergunningcheck" rel="noopener" target="_blank">omgevingsloket.nl</a>.</p>
 <h2>Recent in Horst aan de Maas</h2>
 <div class="tbl"><table><tr><th>Datum</th><th>Wat</th><th>Adres</th><th>Status</th></tr><tr><td class="num">10 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-422965.html" rel="nofollow noopener" target="_blank">(10 september 2026)</a></td><td>Noordsingel 7<div class="klein">5961 XW Horst</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">4 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-413296.html" rel="nofollow noopener" target="_blank">(4 september 2026)</a></td><td>Tienrayseweg 25<div class="klein">5961 NK Horst</div></td><td><span class="tag">verleend</span></td></tr><tr><td class="num">2 sep 2026</td><td><a href="https://zoek.officielebekendmakingen.nl/gmb-2026-411780.html" rel="nofollow noopener" target="_blank">legaliseren van de bestaande aanbouw De ontvangstdatum van de zaak: 1 juli 2026 De globale locatie: Americaanseweg 46a</a></td><td>Americaanseweg 46a<div class="klein">5976 NE Kronenberg</div></td><td><span class="tag grijs">beslistermijn verlengd</span></td></tr></table></div>
 
