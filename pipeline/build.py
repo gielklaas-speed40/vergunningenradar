@@ -100,7 +100,44 @@ form.mail input,form.mail select{width:100%;font:inherit;font-size:16px;padding:
 form.mail button{margin-top:14px;font:inherit;padding:9px 16px;background:var(--acc);color:#fff;border:none;border-radius:6px;cursor:pointer}
 footer{border-top:1px solid var(--line);padding:18px 0;color:var(--mut);font-size:13px}
 @media (max-width:600px){header nav a{margin-left:10px}h1{font-size:22px}}
+h1,h2,.kern b,header .brand{font-family:Archivo,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1{font-size:34px;font-weight:800;letter-spacing:-.3px;line-height:1.1}
+h2{font-size:19px;font-weight:700}
+header .brand{font-weight:800;font-size:20px}
+.hero{padding:30px 0 6px;max-width:760px}
+.hero p.lead{font-size:17px;margin-top:10px}
+.zoek{position:relative;max-width:560px;margin:18px 0 6px}
+.zoek input{width:100%;font:inherit;font-size:17px;padding:13px 16px;border:2px solid var(--ink);border-radius:8px;background:#fff}
+.zoek input:focus{outline:none;border-color:var(--acc)}
+.zoek ul{position:absolute;left:0;right:0;top:100%;margin:4px 0 0;padding:6px 0;list-style:none;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(21,32,43,.12);z-index:5;max-height:320px;overflow:auto}
+.zoek ul:empty{display:none}
+.zoek li a{display:block;padding:8px 14px;text-decoration:none;color:var(--ink)}
+.zoek li a:hover,.zoek li.actief a{background:var(--acc-soft)}
+.zoek li a span{color:var(--mut);font-size:13px;margin-left:6px}
+.kern{display:flex;gap:28px 40px;flex-wrap:wrap;align-items:flex-end;margin:22px 0 10px}
+.kern b{display:block;font-size:38px;font-weight:800;line-height:1}
+.kern b.groot{font-size:56px;color:var(--acc)}
+.kern span{display:block;color:var(--mut);font-size:13px;margin-top:6px;max-width:220px}
+@media (max-width:600px){h1{font-size:28px}.kern b.groot{font-size:44px}}
 """
+
+ZOEK_JS = r"""<script>
+(function(){
+var inp=document.getElementById('zoek');if(!inp)return;
+var lijst=JSON.parse(document.getElementById('zoekdata').textContent);
+var ul=document.getElementById('zoekres');var act=-1;
+function norm(t){return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
+function render(q){ul.innerHTML='';act=-1;q=norm(q.trim());if(q.length<2)return;
+ var hits=[];for(var i=0;i<lijst.length&&hits.length<12;i++){var r=lijst[i];if(norm(r[0]).indexOf(q)===0||norm(r[0]).indexOf(' '+q)>=0)hits.push(r);}
+ if(!hits.length){for(var j=0;j<lijst.length&&hits.length<12;j++){var s=lijst[j];if(norm(s[0]).indexOf(q)>=0)hits.push(s);}}
+ hits.forEach(function(r){var li=document.createElement('li');var a=document.createElement('a');a.href=r[2];a.textContent=r[0];if(r[1]){var sp=document.createElement('span');sp.textContent=r[1];a.appendChild(sp);}li.appendChild(a);ul.appendChild(li);});}
+inp.addEventListener('input',function(){render(inp.value);});
+inp.addEventListener('keydown',function(e){var items=ul.querySelectorAll('li');if(!items.length)return;
+ if(e.key==='ArrowDown'){act=Math.min(act+1,items.length-1);}else if(e.key==='ArrowUp'){act=Math.max(act-1,0);}else if(e.key==='Enter'){e.preventDefault();var t=items[act>=0?act:0].querySelector('a');if(t)location.href=t.href;return;}else return;
+ e.preventDefault();items.forEach(function(li,i){li.classList.toggle('actief',i===act);});});
+document.addEventListener('click',function(e){if(!inp.parentNode.contains(e.target))ul.innerHTML='';});
+})();
+</script>"""
 
 
 def e(t) -> str:
@@ -130,6 +167,8 @@ def pagina(titel: str, body: str, diepte: int, omschrijving: str, canonical: str
 <meta name="description" content="{e(omschrijving)}">
 <link rel="canonical" href="{BASIS_URL}{canonical}">
 {adsense}
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&display=swap">
 <style>{CSS}</style>
 </head>
 <body>
@@ -217,16 +256,29 @@ def bouw_site(vergunningen: list[dict], uit: str, vandaag: dt.date, dagen_lijst:
         for w, n in werk_tel.most_common()
     )
     n_verleend30 = sum(1 for v in bouw if v["datum"] >= grens30 and v["status"] == "verleend")
-    body = f"""<h1>Verleende bouwvergunningen per gemeente</h1>
-<p class="lead">Elke dag halen we de omgevingsvergunningen uit de gemeentebladen en sorteren we ze op werksoort. Zo zie je in welke straat binnenkort een dakkapel, aanbouw of nieuwbouw komt. Een aanvraag is het vroegste openbare signaal, vaak maanden voordat de schilder, stukadoor of installateur wordt gekozen.</p>
-<p class="klein">Laatste 30 dagen: {n_verleend30} verleende bouwvergunningen in {len(tel30)} gemeenten. Bijgewerkt op {e(datum_nl(vandaag.isoformat()))}.</p>
+    n_aangevraagd30 = sum(1 for v in bouw if v["datum"] >= grens30 and v["status"] in ("aangevraagd", "ontwerp"))
+    zoekdata = sorted([[naam[slug], "", f"{slug}/"] for slug in per_gemeente], key=lambda r: r[0])
+    zoekdata += [[WERKSOORT_LABEL.get(w, w), "werksoort", f"werk/{w}/"] for w in per_werk]
+    body = f"""<div class="hero">
+<h1>Wie bouwt er binnenkort bij jou in de buurt?</h1>
+<p class="lead">Elke ochtend lezen we alle gemeentebladen van Nederland en zetten we de omgevingsvergunningen per gemeente en werksoort op een rij: dakkapellen, aanbouwen, nieuwbouw, kozijnen. Een aanvraag is het vroegste openbare signaal, vaak maanden voordat de schilder, stukadoor of installateur wordt gekozen.</p>
+<div class="zoek"><input id="zoek" type="search" placeholder="Typ je gemeente of een werksoort, bijvoorbeeld Helmond of dakkapel" autocomplete="off" aria-label="Zoek gemeente of werksoort"><ul id="zoekres"></ul></div>
+</div>
+<div class="kern">
+<div><b class="groot">{n_verleend30}</b><span>verleende bouwvergunningen in de laatste 30 dagen</span></div>
+<div><b>{n_aangevraagd30}</b><span>aanvragen die nog op een besluit wachten</span></div>
+<div><b>{len(tel30)}</b><span>gemeenten met bekendmakingen</span></div>
+</div>
+<p class="klein">Bijgewerkt op {e(datum_nl(vandaag.isoformat()))}.</p>
 <h2>Per werksoort</h2>
 <div class="tbl"><table><tr><th>Werksoort</th><th>Laatste 30 dagen</th><th>Interessant voor</th></tr>{werk_rijen}</table></div>
 <h2>Per gemeente</h2>
 <div class="kolommen">{gem_links}</div>
 <h2>Nieuwste bekendmakingen</h2>
 {tabel(bouw[:40], True)}
-{mailformulier("overzicht")}"""
+{mailformulier("overzicht")}
+<script id="zoekdata" type="application/json">{json.dumps(zoekdata, ensure_ascii=False, separators=(",", ":"))}</script>
+{ZOEK_JS}"""
     with open(os.path.join(uit, "index.html"), "w", encoding="utf-8") as f:
         f.write(pagina("Vergunningenradar, verleende bouwvergunningen per gemeente", body, 0,
                        "Dagelijks overzicht van verleende omgevingsvergunningen voor dakkapellen, aanbouwen, nieuwbouw en verbouwingen per gemeente.", ""))
